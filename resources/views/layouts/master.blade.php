@@ -24,7 +24,7 @@
                 Logout</button></p>
         </form>
 
-       
+        @isAdmin
 
         <ul class="collapsible">
             <li>
@@ -50,6 +50,7 @@
 
         </ul>
 
+        @endisAdmin
         
 
         <h1 class="center-align green-text text-dark-4 ">Todo List</h1>

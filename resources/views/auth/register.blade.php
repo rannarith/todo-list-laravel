@@ -61,7 +61,7 @@
                             </div>
                         </div>
 
-                        <!-- Add Check box as Admin -->
+                        
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
