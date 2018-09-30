@@ -18,41 +18,27 @@
         </thead>
 
         <tbody>
+        @foreach($tasks as $task)
             <tr>
-                <td><a href="">Meeting with CEO</a></td>
+                <td><a href="{{ route('updateStatus', $task->id) }}">
+                    @if(!$task->status)
+                    {{ $task->content }}
+                    @else
+                    <strike class="grey-text">{{ $task->content }}</strike>
+                    @endif
+                </a></td>
+                
                 @isAdmin
-                <td>Bill Gate</td>
+                <td>{{ $task->user->name }}</td>
                 @endisAdmin
-                <td><a><i class="small material-icons">edit</i></a></td>
-                <td><a><i class="smale material-icons">delete_forever</i></a></td>
+                <td><a href="{{ route('edit', $task->id) }}"><i class="small material-icons">edit</i></a></td>
+                <td><a href="{{ route('destroy', $task->id) }}" ><i class="smale material-icons">delete_forever</i></a></td>
             </tr>
-            <tr>
-                <td><a href="">Meeting with CEO</a></td>
-                @isAdmin
-                <td>Bill Gate</td>
-                @endisAdmin
-                <td><a><i class="small material-icons">edit</i></a></td>
-                <td><a><i class="smale material-icons">delete_forever</i></a></td>
-            </tr>
-            <tr>
-                <td><a href="">Meeting with CEO</a></td>
-                @isAdmin
-                <td>Bill Gate</td>
-                @endisAdmin
-                <td><a><i class="small material-icons">edit</i></a></td>
-                <td><a><i class="smale material-icons">delete_forever</i></a></td>
-            </tr>
-            <tr>
-                <td><a href="">Meeting with CEO</a></td>
-                @isAdmin
-                <td>Bill Gate</td>
-                @endisAdmin
-                <td><a><i class="small material-icons">edit</i></a></td>
-                <td><a><i class="smale material-icons">delete_forever</i></a></td>
-            </tr>
+        @endforeach 
         </tbody>
     </table>
-    <ul class="pagination">
+    {{ $tasks->links('vendor.pagination.materialize') }}
+    <!-- <ul class="pagination">
         <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
         <li class="active"><a href="#!">1</a></li>
         <li class="waves-effect"><a href="#!">2</a></li>
@@ -60,19 +46,20 @@
         <li class="waves-effect"><a href="#!">4</a></li>
         <li class="waves-effect"><a href="#!">5</a></li>
         <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-    </ul>
+    </ul> -->
 
-    <form class="col s12">
+    <form method="POST" action=" {{ route('store') }} "  class="col s12">
         <div class="row">
             <div class="input-field col s6">
-                <input placeholder="Placeholder" id="task" type="text" class="validate">
+                <input name="task" placeholder="Placeholder" id="task" type="text" class="validate">
                 <label for="task">New Task</label>
             </div>
 
         @include('partials.coworkers')
             
         </div>
-        <a class="waves-effect waves-light btn-small">Add new Task</a>
+        <button type="submit" class="waves-effect waves-light btn-small">Add new Task</button>
+        @csrf
     </form>
 
     @isCoworker

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Task;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+// use Session;
 
 class TodoController extends Controller
 {
@@ -13,7 +17,13 @@ class TodoController extends Controller
      */
     public function index()
     {
-        return view('index');
+        // $tasks = Task::all(); //get all data from table Tasks
+        // $tasks = Task::paginate(4); //Use with pagination
+        $tasks = Task::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(4);// Show Task add By User Id
+        return view('index', compact('tasks'));
+        // $task = DB::table('tasks')->paginate(4);
+        // return view('index', ['tasks'=> $task]);
+        
     }
 
     /**
@@ -21,9 +31,9 @@ class TodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        
+              
     }
 
     /**
@@ -34,7 +44,14 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->input('task'))
+        {
+            $task =new Task;
+            $task->content = $request->input('task');
+            Auth::user()->task()->save($task);
+        }
+        
+        return redirect()->back();
     }
 
     /**
@@ -54,9 +71,10 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($id)
     {
-        return view('edit');
+        $task = Task::find($id);
+        return view('edit', compact('task'));
     }
 
     /**
@@ -68,7 +86,10 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $task = Task::find($id);
+        $task->content = $request->input('task');
+        $task->save();
+        return redirect('/');
     }
 
     /**
@@ -79,6 +100,18 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $task = Task::find($id);
+        $task->delete();
+        // return redirect('/'); Or
+        return redirect()->back();
+    }
+
+    //Update status 
+    public function updateStatus($id)
+    {
+        $task = Task::find($id);
+        $task->status = ! $task->status;
+        $task->save();
+        return redirect()->back();
     }
 }
