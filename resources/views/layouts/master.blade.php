@@ -25,31 +25,26 @@
         </form>
 
         @isAdmin
-
+        @if( $invitations->count()>0 )
         <ul class="collapsible">
             <li>
                 <div class="collapsible-header">
                     <i class="material-icons">person_add</i>
                     Invitation
-                    <span class="new badge red">4</span></div>
+                    <span class="new badge red">{{ $invitations->count() }}</span></div>
                 <div class="collapsible-body">
+                @foreach($invitations as $invitation)
                     <p>
-                        <span class="red-text"><b>Bill Gate</b></span><a href="">accept</a> | <a href="">deny</a>
+                        <span class="red-text"><b>{{ $invitation->worker->name }}</b></span><a href="{{ route('acceptInvitation', ['id'=>$invitation->id]) }}">accept</a> 
+                        | <a href="{{ route('denyInvitation', ['id'=>$invitation->id]) }}">deny</a>
                     </p>
-                    <p>
-                        <span class="red-text"><b>Larry Page</b></span><a href="">accept</a> | <a href="">deny</a>
-                    </p>
-                    <p>
-                        <span class="red-text"><b>Jack Ma</b></span><a href="">accept</a> | <a href="">deny</a>
-                    </p>
-                    <p>
-                        <span class="red-text"><b>Steav Job</b></span><a href="">accept</a> | <a href="">deny</a>
-                    </p>
+                    @csrf
+                @endforeach
                 </div>
             </li>
 
         </ul>
-
+        @endif
         @endisAdmin
         
 

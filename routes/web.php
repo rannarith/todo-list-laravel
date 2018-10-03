@@ -18,6 +18,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update/{id}', 'TodoController@update')->name('update');
     Route::get('/destroy/{id}', 'TodoController@destroy')->name('destroy');
     Route::get('/updateStatus/{id}', 'TodoController@updateStatus')->name('updateStatus');
+
+    Route::post('/sendInvitation', 'TodoController@sendInvitation')->name('sendInvitation');
+    Route::get('/acceptInvitation/{id}', 'TodoController@acceptInvitation')->name('acceptInvitation');
+    Route::get('/denyInvitation/{id}', 'TodoController@denyInvitation')->name('denyInvitation');
+    // Route::get('/deleteCoworker/{id}', 'TodoController@deleteCoworker')->name('deleteCoworker');
     
 });
 

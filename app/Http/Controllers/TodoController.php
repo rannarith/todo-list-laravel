@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Task;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
+use App\Invitation;
+use App\User;
 // use Session;
 
 class TodoController extends Controller
@@ -19,8 +21,20 @@ class TodoController extends Controller
     {
         // $tasks = Task::all(); //get all data from table Tasks
         // $tasks = Task::paginate(4); //Use with pagination
-        $tasks = Task::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(4);// Show Task add By User Id
-        return view('index', compact('tasks'));
+        if(Auth::user()->is_admin)
+        {
+            $coworkers = Invitation::where('admin_id',Auth::user()->id)->where('accepted',1)->get();
+            $invitations = Invitation::where('admin_id',Auth::user()->id)->where('accepted',0)->get();
+            $tasks = Task::where('user_id', Auth::user()->id)->orwhere('admin_id', Auth::user()->admin_id)->orderBy('created_at', 'DESC')->paginate(4);// Show Task add By User Id
+        }
+        else
+        {
+            $invitations = [];
+            $tasks = Task::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(4);// Show Task add By User Id
+            $coworkers = User::where('is_admin',1)->get();
+        }
+        
+        return view('index', compact('tasks','coworkers','invitations'));
         // $task = DB::table('tasks')->paginate(4);
         // return view('index', ['tasks'=> $task]);
         
@@ -114,4 +128,43 @@ class TodoController extends Controller
         $task->save();
         return redirect()->back();
     }
+
+    public function sendInvitation (Request $request) 
+    {
+        // $Invite = !Invitation::where('coworker_id',Auth::user()->id)->where('admin_id', $request->input('admin'));
+        if((int) $request->input('admin') >0 
+        && !Invitation::where('coworker_id',Auth::user()->id)->where('admin_id', $request->input('admin'))->exists() 
+        )
+        {
+            $invitation = new Invitation;
+            $invitation->coworker_id = Auth::user()->id;
+            $invitation->admin_id = (int) $request->input('admin');
+            $invitation->save();
+        }
+
+        return redirect()->back();
+    }
+
+    public function acceptInvitation($id)
+    {
+        $invitation = Invitation::find($id);
+        $invitation->accepted = true;
+        $invitation->save();
+        return redirect()->back();
+    }
+
+    public function denyInvitation($id)
+    {
+        $invitation = Invitation::find($id);
+        $invitation->delete();
+        return redirect()->back();
+    }
+    
+    // public function deleteCoworker($id)
+    // {
+    //     $coworker = Invitation::find($id);
+    //     $coworker->delete();
+    //     return redirect()->back();
+    // }
+
 }

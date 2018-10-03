@@ -64,19 +64,18 @@
 
     @isCoworker
     <br><br>
-    <form action="" class="col s12">
+    <form action="{{ route('sendInvitation')}}" method="POST">
         <div class="input-field ">
-            <select>
+            <select name="admin">
                 <option value="" disabled selected>Send Invitation To: </option>
-                
-                <option value="2">Bill gate </option>
-                <option value="3">Larry Page</option>
-                <option value="4">Jack Ma</option>
-                <option value="5">Steav Job</option>
+                @foreach($coworkers as $coworker)
+                <option value="{{ $coworker->id }}">{{ $coworker->name }}</option>
+                @endforeach
             </select>
             <label>Send Invitation To</label>
         </div>
-        <a class="waves-effect waves-light btn-small">Send Invitation</a>
+        <button type="submit" class="waves-effect waves-light btn-small">Send Invitation</button>
+        @csrf
     </form>
 
     @endisCoworker
@@ -89,20 +88,13 @@
 
     <ul class="collection with-header">
         <li class="collection-header">
-            <h4>My Conworkers</h4>
+            <h4>My Coworkers</h4>
         </li>
+        @foreach($coworkers as $coworker)
         <li class="collection-item">
-            <div>Bill gate<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div>
+            <div>{{ $coworker->worker->name }}<a href="" class="secondary-content"><i class="material-icons">delete</i></a></div>
         </li>
-        <li class="collection-item">
-            <div>Larry Page<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div>
-        </li>
-        <li class="collection-item">
-            <div>Steav Job<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div>
-        </li>
-        <li class="collection-item">
-            <div>jack Ma<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div>
-        </li>
+        @endforeach
 
     </ul>
 
